@@ -9,14 +9,16 @@
 两端使用同一份 Git 工程，分别准备本机运行环境。以下为 2026-09-11 的实际部署位置，
 不是脚本必须硬编码的路径。
 
-| 内容 | 本地开发端 | NVIDIA 执行端 |
-| --- | --- | --- |
-| 工程根目录 | /home/young/autodl/qiansai | /root/autodl-tmp/qiansai |
-| 主要职责 | 开发、pytest、文档、Git、查看与归档结果 | 下载权重、安装 GPU 依赖、推理、交叉验证、官方独立评测 |
-| 工作流环境 | .venv，轻量项目依赖 | .venv，轻量项目依赖 |
-| GPU 环境 | 未安装项目 GPU 环境 | .venv-vllm 链接到 /root/qiansai-envs/vllm-0.19.1 |
-| 模型权重 | model/weights 仅保留占位文件 | model/weights/chipmate-v-4b 与 chipmate-p-4b，固定版本及校验清单 |
-| 实验产物 | runs/ 保存已同步的完整实验与对照结果 | runs/ 是任务执行时产生原始结果的位置 |
+| 内容 | 本地开发端 | NVIDIA 执行端 | Git 与新服务器恢复方式 |
+| --- | --- | --- | --- |
+| 工程根目录 | /home/young/autodl/qiansai | /root/autodl-tmp/qiansai | 在新机器选择持久化目录 clone |
+| 主要职责 | 开发、pytest、文档、Git、查看与归档结果 | 下载权重、安装 GPU 依赖、推理、交叉验证、官方独立评测 | 代码、配置、文档与脚本由 Git 恢复 |
+| 上游代码与原始题目 | 已有 | 已有 | --recurse-submodules 获取固定 ChipMATE 和 156 题数据 |
+| 处理后题目 | data/processed 已生成 | data/processed 已生成 | 不入 Git，安装脚本重新生成 |
+| 工作流环境 | .venv，轻量项目依赖 | .venv，轻量项目依赖 | 不复制已安装环境，按 uv.lock 重建 |
+| GPU 环境 | 未安装项目 GPU 环境 | .venv-vllm 链接到 /root/qiansai-envs/vllm-0.19.1 | 按 docker/requirements.cuda.lock 重建 |
+| 模型权重 | model/weights 仅保留占位文件 | model/weights/chipmate-v-4b 与 chipmate-p-4b，固定版本及校验清单 | Git 仅保存身份；完整目录另行复制或授权下载 |
+| 实验产物 | runs/ 保存已同步的完整实验与对照结果 | runs/ 是任务执行时产生原始结果的位置 | 完整产物不入 Git；恢复历史时另行复制，新实验不依赖旧结果 |
 
 业务代码、文档、配置、依赖锁、模型身份和子模块版本进入 GitHub 仓库。
 本次实际同步方法为本地 push GitHub，并通过 SSH 传递 Git bundle 让服务器快进到同一提交；
@@ -152,6 +154,28 @@ vLLM 的依赖。开发时挂载源码，权重只读挂载，runs/ 可写挂载
 依赖安装和模型下载直接在该服务器后台运行，保存独立日志、PID、退出码；SSH 断开不结束任务。
 项目与权重位于服务器数据盘，GPU 环境单独放置，避免系统盘承载全部大文件。
 自有 Dockerfile 和 Compose 尚未构建验证，不能把平台容器运行视为自有镜像已验证。
+
+### 从 Git 准备新 NVIDIA 服务器
+
+新服务器需先具备仓库访问权限、可用的 NVIDIA 驱动、Python 3.12、uv 0.9.18、
+Icarus Verilog/vvp 和编译工具。现有安装脚本不会替代这些基础准备。
+下列命令展示当前已有入口，不代表新服务器或 A100 已经实际验收：
+
+```bash
+git clone --recurse-submodules https://github.com/fusang991/qiansai.git
+cd qiansai
+bash scripts/setup_cuda.sh
+.venv/bin/hf auth login
+.venv/bin/python scripts/fetch_models.py
+./run.sh --case Prob001_zero --case Prob007_wire --case Prob034_dff8
+./run.sh --suite verilogeval-v2
+```
+
+setup_cuda.sh 创建两套 Python 环境、安装锁定依赖、转换题目并调用 pytest。
+HF 登录需要已有两份模型的访问权限；也可复制旧服务器整个 model/weights/ 并校验，
+替代登录和下载步骤。完整复制包括权重、配置、分词器与下载校验清单。
+Git clone 不恢复 Python 环境、模型文件或完整历史；新 testcase 不依赖旧 runs/。
+逐项核对与问答见 [Git clone 恢复说明](journal/20260911_220716_clone_recovery.md)。
 
 ### A100 迁移与关机边界
 

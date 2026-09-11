@@ -44,6 +44,7 @@ qiansai/
 │   ├── context.md
 │   ├── decisions.md
 │   ├── architecture.md
+│   ├── guides/server_setup.md        # 两端文件清单与新 NVIDIA 服务器部署步骤
 │   ├── journal/
 │   │   ├── _template.md
 │   │   └── YYYYMMDD_HHMMSS_keyword.md
@@ -156,6 +157,8 @@ vLLM 的依赖。开发时挂载源码，权重只读挂载，runs/ 可写挂载
 自有 Dockerfile 和 Compose 尚未构建验证，不能把平台容器运行视为自有镜像已验证。
 
 ### 从 Git 准备新 NVIDIA 服务器
+
+逐步操作手册见 [本地文件与新服务器部署](guides/server_setup.md)。
 
 新服务器需先具备仓库访问权限、可用的 NVIDIA 驱动、Python 3.12、uv 0.9.18、
 Icarus Verilog/vvp 和编译工具。现有安装脚本不会替代这些基础准备。

@@ -4,6 +4,34 @@
 逐次历史记录放在 journal/。当前状态和资源见 [context.md](context.md)，阶段边界见
 [decisions.md](decisions.md)。
 
+## 本地与服务器的实际分工
+
+两端使用同一份 Git 工程，分别准备本机运行环境。以下为 2026-09-11 的实际部署位置，
+不是脚本必须硬编码的路径。
+
+| 内容 | 本地开发端 | NVIDIA 执行端 |
+| --- | --- | --- |
+| 工程根目录 | /home/young/autodl/qiansai | /root/autodl-tmp/qiansai |
+| 主要职责 | 开发、pytest、文档、Git、查看与归档结果 | 下载权重、安装 GPU 依赖、推理、交叉验证、官方独立评测 |
+| 工作流环境 | .venv，轻量项目依赖 | .venv，轻量项目依赖 |
+| GPU 环境 | 未安装项目 GPU 环境 | .venv-vllm 链接到 /root/qiansai-envs/vllm-0.19.1 |
+| 模型权重 | model/weights 仅保留占位文件 | model/weights/chipmate-v-4b 与 chipmate-p-4b，固定版本及校验清单 |
+| 实验产物 | runs/ 保存已同步的完整实验与对照结果 | runs/ 是任务执行时产生原始结果的位置 |
+
+业务代码、文档、配置、依赖锁、模型身份和子模块版本进入 GitHub 仓库。
+本次实际同步方法为本地 push GitHub，并通过 SSH 传递 Git bundle 让服务器快进到同一提交；
+原始 runs/ 用 rsync 单独同步。Git 不负责复制 Python 环境、模型权重、缓存和大型产物。
+两端 .venv 按相同依赖约定分别安装，不直接复制虚拟环境。
+
+一次 testcase 的工作流、两个模型服务和 Icarus 评测均在服务器完成，HTTP 请求使用
+服务器自身的 127.0.0.1:8001/8002。本地 SSH 负责发起和查看任务。
+本次全量任务用 nohup 在服务器后台运行，控制脚本保存日志与退出码；
+直接执行 run.sh 本身仍是前台命令，长任务是否脱离 SSH 由启动方式决定。
+
+当前实际部署为 AutoDL 平台容器加上述两个 Python 环境。GPU 环境在系统盘的独立目录，
+项目、权重和结果位于数据盘。仓库自有 Dockerfile/Compose 仍待构建验证。
+详细复核见 [两端架构说明记录](journal/20260911_211722_architecture_review.md)。
+
 ## 目录与文件职责
 
 ```text

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "awaiting_authorized_download",
+  "models": {
+    "v": {
+      "repo_id": "core12345/ChipMATE-V-4B",
+      "revision": null,
+      "directory": "chipmate-v-4b",
+      "dtype": "bfloat16"
+    },
+    "p": {
+      "repo_id": "core12345/ChipMATE-P-4B",
+      "revision": null,
+      "directory": "chipmate-p-4b",
+      "dtype": "bfloat16"
+    }
+  }
+}

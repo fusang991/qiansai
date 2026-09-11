@@ -1,0 +1,6 @@
+[submodule "third_party/chipmate"]
+	path = third_party/chipmate
+	url = https://github.com/zhongkaiyu/ChipMATE.git
+[submodule "data/verilog_eval"]
+	path = data/verilog_eval
+	url = https://github.com/NVlabs/verilog-eval.git

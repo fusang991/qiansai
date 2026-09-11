@@ -1,0 +1,33 @@
+services:
+  qiansai:
+    image: qiansai:cuda-local
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.cuda
+      args:
+        CUDA_VLLM_IMAGE: "${CUDA_VLLM_IMAGE:?Set a pinned CUDA vLLM image in .env}"
+    init: true
+    shm_size: 4gb
+    working_dir: /app
+    stop_grace_period: 30s
+    ports:
+      - "127.0.0.1:8001:8001"
+      - "127.0.0.1:8002:8002"
+    volumes:
+      - ../src:/app/src:ro
+      - ../configs:/app/configs:ro
+      - ../third_party/chipmate:/app/third_party/chipmate:ro
+      - "${MODEL_ROOT:-../model/weights}:/models:ro"
+      - "${DATA_ROOT:-../data}:/app/data:ro"
+      - "${RUNS_ROOT:-../runs}:/app/runs"
+    environment:
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+      VLLM_NO_USAGE_STATS: "1"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["${GPU_DEVICE_ID:-0}"]
+              capabilities: [gpu]

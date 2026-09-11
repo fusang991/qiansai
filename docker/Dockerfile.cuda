@@ -1,0 +1,27 @@
+# syntax=docker/dockerfile:1
+# Select a compatible pinned image. GPU execution is not validated yet.
+ARG CUDA_VLLM_IMAGE
+FROM ${CUDA_VLLM_IMAGE}
+USER root
+WORKDIR /app
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends iverilog git ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Isolate workflow dependencies from the base image's vLLM environment.
+COPY pyproject.toml uv.lock README.md /app/
+COPY third_party/chipmate /app/third_party/chipmate
+COPY src /app/src
+RUN python3 -m pip install --no-cache-dir uv==0.9.18 \
+    && uv sync --frozen --no-dev --python "$(command -v python3)"
+
+COPY configs /app/configs
+COPY docker /app/docker
+COPY scripts /app/scripts
+COPY model/manifest.json /app/model/manifest.json
+COPY run.sh run_baseline.sh /app/
+ENV HF_HUB_OFFLINE=1 \
+    TRANSFORMERS_OFFLINE=1 \
+    PYTHONUNBUFFERED=1
+ENTRYPOINT ["bash", "/app/docker/entrypoint.sh"]
+CMD []

@@ -18,9 +18,11 @@ container and authorized deployment, including an eventual one-command testcase
 run with visible independent results. Download weights and install GPU dependencies
 on the server; keep the workflow and GPU environments separate. Target RTL with
 ChipMATE V-4B and P-4B. Reproduce the pinned upstream workflow before changing its
-algorithm. The NVIDIA deployment smoke passed three official testcases; this is
-not a full benchmark. Building our own Docker image, Vivado and AMD execution
-remain later milestones.
+algorithm. The NVIDIA deployment smoke passed three official testcases. The
+initial full run completed all 156 tasks with 109 PASS and 47 FAIL, no execution
+errors or skipped tasks. A separate CPU reference control found five evaluator
+limitations; preserve the raw results and distinguish these from model quality.
+Building our own Docker image, Vivado and AMD execution remain later milestones.
 
 ## Record every work session
 

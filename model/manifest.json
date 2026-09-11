@@ -1,14 +1,31 @@
 {
   "schema_version": 1,
-  "status": "nvidia_dual_model_smoke_verified",
+  "status": "nvidia_full_suite_evaluated",
   "verification": {
-    "run": "runs/20260911_134142_nvidia_acceptance",
-    "journal": "docs/journal/20260911_123913_cloud_resume.md",
-    "metrics_sha256": "ce305d9f36db5bfef7c73c2f0421ffc6a1968b560b7ce1c6759eb2dc658d7e75",
-    "gpu_summary_sha256": "c642838b13b2152a8057e67eb1a4bff8bc2f8cb5a3ab9ca0055dc6bf741cab66",
-    "independent_passed": 3,
-    "selected": 3,
-    "scope": "deployment smoke; not a full benchmark or AMD validation"
+    "run": "runs/20260911_140804_nvidia_full_suite",
+    "journal": "docs/journal/20260911_193029_full_suite_results.md",
+    "code_commit": "0870769de27fe5cee0f2f550d9a8220748f284e8",
+    "metrics_sha256": "ee24d404d750292f63933c2cbd848c20bcc0d73e0b72abe2f7ad1e7bf6632c6f",
+    "gpu_summary_sha256": "b94a24e1f7529211cd34675d9a6488152e2043aeafcca63e6c678c51b5053dab",
+    "independent_passed": 109,
+    "selected": 156,
+    "raw_failed": 47,
+    "execution_errors": 0,
+    "not_run": 0,
+    "reference_control": {
+      "run": "runs/20260911_193510_evaluator_reference_control",
+      "passed": 151,
+      "failed": 5,
+      "affected_task_ids": [
+        "Prob082_lfsr32",
+        "Prob099_m2014_q6c",
+        "Prob141_count_clock",
+        "Prob151_review2015_fsm",
+        "Prob156_review2015_fancytimer"
+      ],
+      "metrics_sha256": "69eff09a7bfd5e4d8097f09b15443a290b53c2e3acae13001078e01655441f08"
+    },
+    "scope": "One original workflow per task, all 156 retained; raw independent results; five evaluator limitations; no paper pass@k, AMD or Vivado claim"
   },
   "models": {
     "v": {
@@ -27,5 +44,14 @@
       "weight_bytes": 9078620536,
       "weight_sha256": "8ac6cacb9bcd834e28d008e510e6af28923105e471c22f05cee2130a8f64fb4d"
     }
+  },
+  "deployment_smoke_verification": {
+    "run": "runs/20260911_134142_nvidia_acceptance",
+    "journal": "docs/journal/20260911_123913_cloud_resume.md",
+    "metrics_sha256": "ce305d9f36db5bfef7c73c2f0421ffc6a1968b560b7ce1c6759eb2dc658d7e75",
+    "gpu_summary_sha256": "c642838b13b2152a8057e67eb1a4bff8bc2f8cb5a3ab9ca0055dc6bf741cab66",
+    "independent_passed": 3,
+    "selected": 3,
+    "scope": "deployment smoke; not a full benchmark or AMD validation"
   }
 }

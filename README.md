@@ -4,9 +4,11 @@
 以 ChipMATE-V-4B 与 ChipMATE-P-4B 为首个模型方案，先在 NVIDIA 上复现，
 再迁移到 AMD。采用独立比赛工程，固定版本保留上游代码。
 
-**当前状态：32 GB NVIDIA 云服务器的双模型闭环已跑通，三道部署验收题的官方独立评测均为 PASS，
-22 项 pytest 通过。自有 Docker 镜像和 AMD 运行尚未实测。** Vivado 暂缓。
-证据见 [部署与验收日志](docs/journal/20260911_123913_cloud_resume.md)。
+**当前状态：双 4B 已在 32 GB NVIDIA 服务器完整跑完 156 题，原始独立判定为 109 PASS、
+47 FAIL（69.87%），执行错误和漏跑均为 0。22 项 pytest 通过。**
+官方参考实现的 CPU 对照另发现 5 题存在评测条件问题，已单独标记；原始结果保留。
+自有 Docker 镜像、AMD 和 Vivado 尚未验收。
+证据和逐题结果见 [全量测评记录](docs/journal/20260911_193029_full_suite_results.md)。
 
 ## 文档入口
 
@@ -57,6 +59,7 @@ bash scripts/smoke_test.sh
 ```bash
 ./run.sh --case Prob001_zero
 ./run.sh --case Prob007_wire --case Prob034_dff8
+./run.sh --suite verilogeval-v2
 ./run.sh --suite verilogeval-v2 --limit 3
 ./run.sh --list-cases
 ```
@@ -71,8 +74,12 @@ bash scripts/smoke_test.sh
 候选 RTL、Python 实现、官方评测原始日志和结果。自验证一致率与独立结果分开。
 单次开发运行不宣称复现论文的 pass@1/pass@5。
 
-2026-09-11 实测：上述三道题均通过；同卡显存每秒采样最大值 29209 MiB（28.52 GiB）。
-首次完整运行约 475 秒，其中两服务启动合计约 406.5 秒；三题生成与评测分别约 28.4、16.6、20.4 秒。
+2026-09-11 全量实测使用提交 0870769 的干净工作区，14:08 开始、17:08 完成，
+总耗时 10825 秒（约 3 小时），双服务启动合计 116.23 秒；单题耗时中位数 38.85 秒。
+同卡显存每秒采样最大值 30201 MiB（29.49 GiB），命令结束后恢复到 1 MiB。
+原始 47 个 FAIL 包含 35 个输出不匹配、10 个编译失败、2 个官方测试台超时。
+参考实现对照中的 5 个异常涉及接口不一致、Icarus 11 的参考语法兼容性和测试台时限；
+不能将原始 47 个 FAIL 全部直接归因于模型。详见上述全量记录。
 
 默认在命令结束时回收本次启动的模型服务。连续开发可先在另一终端运行
 bash scripts/serve_models.sh；随后 run.sh 会复用已有服务。--no-start 要求服务预先就绪。

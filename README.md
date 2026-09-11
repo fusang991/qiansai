@@ -15,6 +15,7 @@
 - [上下文与术语](docs/context.md)
 - [当前共识与阶段目标](docs/decisions.md)
 - [完整架构](docs/architecture.md)
+- [比赛规则与 109/156 结果解读](docs/competition.md)
 - [本地文件与新服务器部署](docs/guides/server_setup.md)
 - [逐次工作日志](docs/journal/)
 - [协作规则](AGENTS.md)

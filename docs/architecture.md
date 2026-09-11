@@ -44,6 +44,7 @@ qiansai/
 │   ├── context.md
 │   ├── decisions.md
 │   ├── architecture.md
+│   ├── competition.md               # AMD 3.1 规则专题与当前结果差距
 │   ├── guides/server_setup.md        # 两端文件清单与新 NVIDIA 服务器部署步骤
 │   ├── journal/
 │   │   ├── _template.md

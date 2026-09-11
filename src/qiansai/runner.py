@@ -36,6 +36,10 @@ def settings(args) -> tuple[dict, dict]:
 
 
 def main() -> None:
+    if not any(arg.split("=", 1)[0] == "--input" for arg in sys.argv[1:]):
+        from .case_runner import main as run_case
+        run_case()
+        return
     args = parser("Run the pinned original ChipMATE workflow").parse_args()
     workflow, serving = settings(args)
     command = [

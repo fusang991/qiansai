@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# Select a compatible pinned image. GPU execution is not validated yet.
+# Select a compatible pinned image. This Docker image has not been built or GPU-tested.
 ARG CUDA_VLLM_IMAGE
 FROM ${CUDA_VLLM_IMAGE}
 USER root

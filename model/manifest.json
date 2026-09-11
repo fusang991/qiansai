@@ -1,18 +1,31 @@
 {
   "schema_version": 1,
-  "status": "awaiting_authorized_download",
+  "status": "nvidia_dual_model_smoke_verified",
+  "verification": {
+    "run": "runs/20260911_134142_nvidia_acceptance",
+    "journal": "docs/journal/20260911_123913_cloud_resume.md",
+    "metrics_sha256": "ce305d9f36db5bfef7c73c2f0421ffc6a1968b560b7ce1c6759eb2dc658d7e75",
+    "gpu_summary_sha256": "c642838b13b2152a8057e67eb1a4bff8bc2f8cb5a3ab9ca0055dc6bf741cab66",
+    "independent_passed": 3,
+    "selected": 3,
+    "scope": "deployment smoke; not a full benchmark or AMD validation"
+  },
   "models": {
     "v": {
       "repo_id": "core12345/ChipMATE-V-4B",
-      "revision": null,
+      "revision": "7fbb17249a49d109787bbc024a7a21b83302a1c2",
       "directory": "chipmate-v-4b",
-      "dtype": "bfloat16"
+      "dtype": "bfloat16",
+      "weight_bytes": 9078620536,
+      "weight_sha256": "1e829e646df26f4882bceaf6b6f9629c1a1a317d63f66b40e51ff8d92d458826"
     },
     "p": {
       "repo_id": "core12345/ChipMATE-P-4B",
-      "revision": null,
+      "revision": "cf59695163ad3e4b63bcc6c4eaa91b05fedc4a2e",
       "directory": "chipmate-p-4b",
-      "dtype": "bfloat16"
+      "dtype": "bfloat16",
+      "weight_bytes": 9078620536,
+      "weight_sha256": "8ac6cacb9bcd834e28d008e510e6af28923105e471c22f05cee2130a8f64fb4d"
     }
   }
 }

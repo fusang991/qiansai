@@ -1,0 +1,5 @@
+# Dedicated GPU environment; workflow dependencies remain in ../uv.lock.
+# Input constraints for requirements.cuda.lock; install the hashed lock file.
+vllm==0.19.1
+transformers==5.5.3
+nvidia-cutlass-dsl==4.4.2

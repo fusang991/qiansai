@@ -9,6 +9,7 @@
 - 当前选择：RTL，目标语言 Verilog / SystemVerilog。
 - 路线：本地架构 → 32 GB NVIDIA 云服务器原方案部署 → AMD 迁移。
 - 第一份开发数据：VerilogEval v2 的 dataset_spec-to-rtl，共 156 题。
+- 已观察到原始 Prob031_dff 题面将 q 列为 input，参考接口为 output；保持固定数据不改写，评测时单独解释。
 - 赛题依据：[原始 PDF](references/amd_2026_guide.pdf)。后续细则与镜像发布后单独登记版本。
 
 ## 常用名词
@@ -33,7 +34,26 @@
 - Icarus Verilog 12.0 和 vvp 可用；Python 3.13.5、uv 0.9.18 可用。
 - Docker Desktop 命令入口存在，但当前 WSL 发行版未启用 Docker 集成，docker version 失败。
 - 尚未下载两份模型权重，尚未进行本地或云端 GPU 推理测试。
-- 用户已说明后续提供 32 GB 显存的 NVIDIA 云服务器；当前只完善本地架构。
+- 以上是本地架构阶段的检查；当前已进入下述云端部署阶段。
+
+## 环境事实：2026-09-11 云服务器
+
+- Ubuntu 22.04.5 云平台容器，RTX 4080 SUPER，32760 MiB，驱动 595.71.05，计算能力 8.9。
+- 数据盘挂载 /root/autodl-tmp，容量 50 GB；系统盘约 30 GB；/dev/shm 约 31 GB。
+- 项目位于服务器 /root/autodl-tmp/qiansai。Python 3.12.3，uv 0.9.18，Icarus 已可用。
+- .venv 是工作流环境；.venv-vllm 指向独立 GPU 环境，服务器预装环境保留。
+- 服务器无 Docker 命令或 socket，先在平台现有容器中使用同一套脚本。
+- 两份模型的 HF 访问权限已于 12:32 在服务器验证通过；凭据不进入项目记录。
+- 用户 12:39 恢复部署，权重下载和 GPU 依赖安装直接在服务器后台执行。
+- 两份权重已下载并校验 SHA256，每份 9,078,620,536 字节；各记录 9 个快照文件。
+- 非交互入口已自动使用对应 Python 环境；本地、服务器均通过 22 项 pytest（CPU 检查）。
+- GPU 环境 176 包兼容性检查通过，Torch 2.10.0 / CUDA 12.8 的 BF16 GPU 运算通过；vLLM 0.19.1、Transformers 5.5.3。
+- 真实双模型验收已完成：Prob001_zero、Prob007_wire、Prob034_dff8 均通过官方 Icarus 编译和仿真。
+- 该次每秒采样显存最大值 29209 MiB（28.52 GiB），命令结束后恢复到 1 MiB。
+- 完整运行 474.97s；V/P 启动分别 215.27s / 191.21s，三题生成与评测分别 28.42s / 16.57s / 20.36s。
+- 这是三题部署检查，不是全量 156 题通过率或论文 pass@k 复现；自有 Docker/AMD/Vivado 尚未验收。
+- 证据：[访问复核](journal/20260911_123239_model_access_retry.md)、
+  [恢复部署](journal/20260911_123913_cloud_resume.md)。
 
 ## 比赛环境与待确认项
 
@@ -41,12 +61,14 @@
 32 GB、离线容器运行。最终 RTL 判定使用 Vivado 2025.2，目标器件
 xczu3eg-sbva484-1-e，时钟约束 5 ns。Vivado 当前阶段暂缓。
 
-待取得：官方基础镜像、单题输入输出协议、最终时间预算和评分细则、模型下载访问权限、
-实测可用的 CUDA/ROCm 镜像版本、云机器环境信息。
+待取得：官方基础镜像、单题输入输出协议、最终时间预算和评分细则、
+实测可用的 CUDA/ROCm 镜像版本。
 
 ## 版本登记
 
 - ChipMATE：d94087b5159aea482648b26398a2ffb164246671。
 - VerilogEval：c498220d0a52248f8e3fdffe279075215bde2da6（v2.0.0）。
-- 权重 revision：待首次授权下载前固定，见 [manifest](../model/manifest.json)。
+- V-4B revision：7fbb17249a49d109787bbc024a7a21b83302a1c2。
+- P-4B revision：cf59695163ad3e4b63bcc6c4eaa91b05fedc4a2e。
+- 权重身份及已校验的权重 SHA256 见 [manifest](../model/manifest.json)；完整文件清单保存在下载产物中。
 - 此处的参数规模与作者报告不是本项目的显存或通过率实测。

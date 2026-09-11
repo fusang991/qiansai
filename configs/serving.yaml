@@ -1,4 +1,4 @@
-# Initial values only. Validate both models on the same 32 GB GPU.
+# Used by the recorded three-case NVIDIA deployment smoke on one 32 GB GPU.
 v:
   model: core12345/ChipMATE-V-4B
   base_url: http://127.0.0.1:8001/v1
@@ -10,3 +10,7 @@ runtime:
   max_model_len: 16384
   max_num_seqs: 3
   gpu_memory_utilization_per_service: 0.45
+  # Eager text-only serving used by the recorded NVIDIA run.
+  extra_args: ["--enforce-eager", "--language-model-only"]
+  environment:
+    CUDA_VISIBLE_DEVICES: "0"

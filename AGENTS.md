@@ -13,11 +13,14 @@ current conversation take precedence over these repository defaults.
 
 ## Current phase
 
-Build and maintain the local architecture first. The user will provide access to
-a 32 GB NVIDIA cloud server later. Model deployment and measurements belong to
-that subsequent phase. Target RTL with ChipMATE V-4B and P-4B. Reproduce the pinned
-upstream workflow before changing its algorithm. Vivado and AMD execution are
-later milestones, not prerequisites for completing the local scaffold.
+The local scaffold is complete. The user has provided a 32 GB NVIDIA cloud
+container and authorized deployment, including an eventual one-command testcase
+run with visible independent results. Download weights and install GPU dependencies
+on the server; keep the workflow and GPU environments separate. Target RTL with
+ChipMATE V-4B and P-4B. Reproduce the pinned upstream workflow before changing its
+algorithm. The NVIDIA deployment smoke passed three official testcases; this is
+not a full benchmark. Building our own Docker image, Vivado and AMD execution
+remain later milestones.
 
 ## Record every work session
 

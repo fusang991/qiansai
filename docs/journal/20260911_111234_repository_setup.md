@@ -103,3 +103,41 @@ f0813c4aea80b0954cb393f5a6329db487eb88340a0a17e51d2bec7179d46273。
 助手进度回复：
 
 > 本地检查已通过：6 个 pytest 测试全部通过，覆盖数据接口提取和 Icarus 正反例；脚本语法、配置解析及文档链接也正常。现在进行提交前检查，随后推送到 fusang991/qiansai 的 main 分支。
+
+### 2026-09-11 11:45:15 + first_push
+
+提交前 git diff --cached --check 通过；确认 46 个文件/子模块记录，没有权重、.env、
+虚拟环境或生成的大型产物。两个子模块保持固定提交，未修改其源码。
+
+实现提交：1650fdbc867155c17c7146400cd4c72b33a0465a。
+提交说明：Initialize RTL workspace architecture and pinned dependencies。
+
+命令：git push -u origin main。
+
+```text
+To https://github.com/fusang991/qiansai.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+```
+
+通过 git ls-remote origin refs/heads/main 复核：
+
+```text
+1650fdbc867155c17c7146400cd4c72b33a0465a    refs/heads/main
+```
+
+本地 git status --short --branch 输出为 main...origin/main，没有未提交变更。
+随后将本发布记录及阶段状态作为文档补充提交推送，保留真实的首次发布证据。
+
+## 交付答复
+
+以下答复在发布记录也完成推送后发送：
+
+已完成并推送到 [fusang991/qiansai](https://github.com/fusang991/qiansai) 的 main 分支。
+
+- 方案二的目录、三份核心文档和逐次 journal 已落地。
+- ChipMATE 和 VerilogEval v2（156 题）已作为固定版本子模块加入。
+- Docker 部署模板、轻量运行入口及 pytest 已配置。
+- 6 个 pytest 测试全部通过。
+
+当前完成的是本地架构，32 GB 云服务器上的模型部署留到下一阶段。

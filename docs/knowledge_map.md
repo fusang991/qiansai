@@ -245,7 +245,8 @@ scripts/build_notebook.py
 - [ ] 错题本方案 A：`build_notebook.py` + 注入开关 + 三臂实验（§6）
 - [ ] 向组委会提问清单（§5.3），答复存原始记录与日期
 - [ ] 32G 比赛容器部署时：查 `nvidia-smi` ≈29-30/32 并记 journal
-- [ ] 未提交变更：`README.md`、`docs/architecture.md`、`docker/README.md`、`docs/guides/server_setup.md`、`scripts/run_docker.sh`、8 篇 journal、本知识地图——**等用户授权一并提交**
+- [x] 文档批次已随 `25ee3b2` 提交并推送（2026-09-23，含 4 个修改文档、`run_docker.sh`、
+  10 篇 journal、本地图与并行会话的 AMD 迁移咨询）
 - [ ] 后续里程碑：Vivado 分级评测、AMD/ROCm 部署（Dockerfile.rocm 同模式）、私有题泛化
 
 ## 9. 证据索引
@@ -257,4 +258,4 @@ scripts/build_notebook.py
 - **A100 链路**：[journal 20260922_210341_a100_docker_probe.md](journal/20260922_210341_a100_docker_probe.md)、[journal 20260922_212639_a100_first_inference.md](journal/20260922_212639_a100_first_inference.md)（首次推理 39-token，`vllm-0.30.0-a220ccc8`）
 - **Docker 脚本**：[journal 20260922_213542_run_docker_script.md](journal/20260922_213542_run_docker_script.md)、[journal 20260923_104931_run_docker_double_dash_fix.md](journal/20260923_104931_run_docker_double_dash_fix.md)
 - **迁移与审计**：[journal 20260922_105847_restricted_network_a100_plan.md](journal/20260922_105847_restricted_network_a100_plan.md)、[journal 20260922_113600_autodl_disk_audit.md](journal/20260922_113600_autodl_disk_audit.md)
-- **关键提交**：基线运行 `0870769`；本文件落笔时起点 `70f83c0`（其后改动均未提交）
+- **关键提交**：基线运行 `0870769`；本文件初版随 `25ee3b2` 提交推送（起点 `70f83c0`）

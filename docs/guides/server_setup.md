@@ -145,6 +145,56 @@ run.sh 本身是前台入口。长任务如需在断开 SSH 后继续，应通�
 目前本地已有全量实验、控制日志和参考实现对照副本。
 复制历史时保留原目录和版本信息，不覆盖旧实验。
 
+## 受限网络服务器：无 GitHub/HuggingFace 的直连迁移（计划，未实测）
+
+目标 A100 能联网但访问不了 GitHub 和 HuggingFace 时，方案大幅简化：
+PyPI（或国内镜像）可达，两个 Python 环境直接在 A100 上安装；
+唯一必须从旧服务器带过去的是**代码（含子模块与 `.git`）和权重**。
+`scripts/setup_cuda.sh` 第 6 行已支持 `QIANSAI_PYPI_INDEX` 换源，
+`uv sync` 另需 `UV_DEFAULT_INDEX` 指向同一镜像。
+`src/qiansai/services.py` 启动模型时设置 `HF_HUB_OFFLINE=1` 并从
+`MODEL_ROOT` 本地目录 serve，运行期不访问 HuggingFace。
+
+A100 上拉取（-P 支持断点续传）：
+
+```bash
+rsync -avP --exclude='.venv' --exclude='.venv-vllm' --exclude='runs' \
+    root@旧服务器:/root/autodl-tmp/qiansai/ /opt/qiansai/
+cd /opt/qiansai
+export QIANSAI_PYPI_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple
+export UV_DEFAULT_INDEX="$QIANSAI_PYPI_INDEX"
+bash scripts/setup_cuda.sh
+```
+
+setup_cuda.sh 会创建 .venv 与 .venv-vllm、按哈希锁安装 GPU 依赖、
+生成 data/processed 并运行 pytest smoke。随后校验权重并验收
+（跳过 fetch_models.py，权重已随 rsync 到位）：
+
+```bash
+sha256sum model/weights/chipmate-v-4b/model.safetensors \
+          model/weights/chipmate-p-4b/model.safetensors
+# 与 model/manifest.json 固定值核对后，进入"第四步：验证三题，再运行全量"
+```
+
+检查项：`uv --version` 应为 0.9.18（uv.lock 由该版本生成，版本差异过大
+会报 lockfile 不兼容，可从旧服务器拷贝单文件 uv 二进制）；
+`git`、`iverilog`、`vvp`、`nvidia-smi` 在位（Ubuntu 源可达可直接 apt 安装）；
+磁盘建议 ≥ 80 GB。工程必须带 `.git`（含 `.git/modules`）整体传输，
+数据集 revision 检查依赖 `git -C data/verilog_eval rev-parse HEAD`。
+
+### 完全无网的备用方案：wheelhouse
+
+若目标机连 PyPI 都不可达，才需要在旧服务器预下载离线 wheel 仓库
+（wheelhouse，`pip download` 得到的 .whl 目录，安装时
+`--no-index --find-links`）：`uv export --frozen --no-hashes` 导出
+工作流 pin 后下载 wheelhouse-workflow；
+`pip download --require-hashes -r docker/requirements.cuda.lock`
+下载 wheelhouse-vllm；`uv build --wheel` 打包 qiansai 与 chipmate；
+A100 上 `uv venv` + `uv pip install --no-index --find-links` 重建两个环境。
+旧服务器的 .venv-vllm 是指向系统盘的符号链接，任何方案都必须排除。
+以上为依据现有锁文件整理的计划，尚未在受限网络机器实测；
+执行后按结果更新本节。
+
 ## A100 与 Docker 的当前边界
 
 A100 仍属于 NVIDIA/CUDA 路线，预计复用上述入口；本项目尚未在 A100 实测。

@@ -12,6 +12,8 @@ CUDA Dockerfile、Compose 尚未构建验证。本机 Docker Desktop 的 WSL 集
 5. 模型从 /models/chipmate-v-4b 与 /models/chipmate-p-4b 本地加载。
    离线环境变量控制模型资源访问；完整断网验收仍需在网络沙箱中实际执行。
 6. 使用 docker compose exec qiansai bash run.sh --case Prob001_zero 调用已有服务。
+7. scripts/run_docker.sh 封装 build 与 run：检测 compose、校验 .env 与权重数据、
+   可选跳过构建（--no-build），透传 run.sh 参数与退出码。
 
 平台现有容器/宿主机：
 

@@ -45,6 +45,7 @@ qiansai/
 │   ├── decisions.md
 │   ├── architecture.md
 │   ├── competition.md               # AMD 3.1 规则专题与当前结果差距
+│   ├── knowledge_map.md             # 常备导航：命令、踩坑、决策、待办与证据索引
 │   ├── guides/server_setup.md        # 两端文件清单与新 NVIDIA 服务器部署步骤
 │   ├── journal/
 │   │   ├── _template.md
@@ -80,6 +81,7 @@ qiansai/
 │   ├── fetch_models.py
 │   ├── prepare_data.py
 │   ├── run_batch.sh
+│   ├── run_docker.sh
 │   ├── setup_cuda.sh
 │   ├── serve_models.sh
 │   └── smoke_test.sh

@@ -121,6 +121,9 @@ docker compose --env-file .env -f docker/compose.cuda.yaml build
 docker compose --env-file .env -f docker/compose.cuda.yaml up -d
 ```
 
+`bash scripts/run_docker.sh --case Prob001_zero` 封装了构建与容器内运行：
+自动检测 compose、校验 `.env` 与权重数据、构建镜像并透传 `run.sh` 的参数与退出码。
+
 容器内有两个本地 vLLM 服务和 ChipMATE/Icarus 工作流；模型、数据和结果通过挂载持久保存。
 这条流程已在云平台现有容器中完成双模型生成、自验证、独立功能评测与原始输出落盘；
 上面的自有 Docker 镜像命令仍待具备 Docker 的环境验证。
